@@ -10,6 +10,7 @@ interface MessageListProps {
 const MessageList: React.FC<MessageListProps> = ({ messages, users = [] }) => {
     const { user } = useAuth();
 
+    // TODO вроде как не ищется юзер по id
     // Helper to find user by ID
     const findUser = (id: number) => {
         return users.find(u => u.id === id) || { username: 'Unknown User' };
@@ -33,7 +34,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, users = [] }) => {
     if (messages.length === 0) {
         return (
             <div className="text-center py-8">
-                <p className="text-gray-500">No messages yet. Start the conversation!</p>
+                <p className="text-gray-500">Пока сообщений нет.</p>
             </div>
         );
     }
