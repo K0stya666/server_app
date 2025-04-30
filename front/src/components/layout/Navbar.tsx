@@ -23,15 +23,15 @@ const Navbar: React.FC = () => {
 
                     <div className="hidden md:flex items-center space-x-4">
                         <Link to="/trips" className="hover:text-teal-200 px-3 py-2 rounded-md transition duration-200">
-                            Explore Trips
+                            Найти попутчика
                         </Link>
                         {isAuthenticated && (
                             <>
                                 <Link to="/trips/create" className="hover:text-teal-200 px-3 py-2 rounded-md transition duration-200">
-                                    Create Trip
+                                    Создать поездку
                                 </Link>
                                 <Link to="/my-trips" className="hover:text-teal-200 px-3 py-2 rounded-md transition duration-200">
-                                    My Trips
+                                    Мои поездки
                                 </Link>
                             </>
                         )}
@@ -76,19 +76,19 @@ const Navbar: React.FC = () => {
                     <div className="flex justify-around py-2">
                         <Link to="/trips" className="text-center flex flex-col items-center p-2">
                             <Search className="h-5 w-5" />
-                            <span className="text-xs">Explore</span>
+                            <span className="text-xs">Найти попутчика</span>
                         </Link>
                         <Link to="/trips/create" className="text-center flex flex-col items-center p-2">
                             <PlusCircle className="h-5 w-5" />
-                            <span className="text-xs">Create</span>
+                            <span className="text-xs">Создать поездку</span>
                         </Link>
                         <Link to="/my-trips" className="text-center flex flex-col items-center p-2">
                             <Map className="h-5 w-5" />
-                            <span className="text-xs">My Trips</span>
+                            <span className="text-xs">Мои поездки</span>
                         </Link>
                         <Link to="/profile" className="text-center flex flex-col items-center p-2">
                             <User className="h-5 w-5" />
-                            <span className="text-xs">Profile</span>
+                            <span className="text-xs">Профиль</span>
                         </Link>
                     </div>
                 </div>
