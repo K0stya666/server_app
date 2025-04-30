@@ -20,9 +20,9 @@ const ItineraryList: React.FC<ItineraryListProps> = ({
         return (
             <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
                 <Calendar className="h-12 w-12 mx-auto mb-2 text-gray-400" />
-                <p className="text-gray-500 font-medium">No itinerary items yet</p>
+                <p className="text-gray-500 font-medium">Пока нет пунктов маршрута</p>
                 <p className="text-gray-400 text-sm mt-1">
-                    The trip organizer hasn't added any destinations to the itinerary.
+                    Организатор поездки не добавил ни одного пункта назначения в маршрут.
                 </p>
             </div>
         );
