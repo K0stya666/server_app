@@ -17,7 +17,7 @@ from app.models import (
 import hashlib
 import jwt
 
-# JWT-настройки
+# jwt
 SECRET_KEY = "your-secret-key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -28,19 +28,20 @@ app = FastAPI()
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
-# Инициализация БД при старте
+# инициализация бд
 @app.on_event("startup")
 def on_startup():
     init_db()
 
-# Хэширование паролей и генерация токенов
-
+# хэширование паролей и генерация токенов
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -63,10 +64,14 @@ def get_current_user(token: str = Depends(oauth2_scheme), session=Depends(get_se
 
 # Аутентификация
 @app.post("/register", response_model=UserProfile)
-def register(user: UserCreate, session=Depends(get_session)):
+def register(
+        user: UserCreate,
+        session=Depends(get_session)
+):
     hashed = hash_password(user.password)
     db_user = UserProfile(
         username=user.username,
+        hashed_password=hashed,
         full_name=user.full_name,
         bio=user.bio,
         preferences=user.preferences
@@ -78,7 +83,9 @@ def register(user: UserCreate, session=Depends(get_session)):
     return db_user
 
 @app.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), session=Depends(get_session)):
+def login(form_data: OAuth2PasswordRequestForm = Depends(),
+          session=Depends(get_session)
+          ):
     statement = select(UserProfile).where(UserProfile.username == form_data.username)
     user = session.exec(statement).first()
     if not user or hash_password(form_data.password) != user.hashed_password:

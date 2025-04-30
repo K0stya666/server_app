@@ -42,7 +42,7 @@ const TripDetailPage: React.FC = () => {
                 setItinerary(itineraryData);
                 setMessages(messagesData);
             } catch (err: any) {
-                setError(err.message || 'Failed to load trip data');
+                setError(err.message || 'Не удалось загрузить данные о поездке');
             } finally {
                 setIsLoading(false);
             }
@@ -63,7 +63,7 @@ const TripDetailPage: React.FC = () => {
             const updatedTrip = await tripsApi.getTrip(numericTripId);
             setTrip(updatedTrip);
         } catch (err: any) {
-            alert(err.message || 'Failed to join trip');
+            alert(err.message || 'Не удалось присоединиться к поездке');
         }
     };
 
@@ -74,12 +74,12 @@ const TripDetailPage: React.FC = () => {
             const updatedTrip = await tripsApi.getTrip(numericTripId);
             setTrip(updatedTrip);
         } catch (err: any) {
-            alert(err.message || 'Failed to leave trip');
+            alert(err.message || 'Не удалось покинуть поездку');
         }
     };
 
     const handleDeleteTrip = async () => {
-        if (!isOwner || !confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
+        if (!isOwner || !confirm('Вы уверены, что хотите удалить эту поездку? Это действие не может быть отменено.')) {
             return;
         }
 
@@ -87,7 +87,7 @@ const TripDetailPage: React.FC = () => {
             await tripsApi.deleteTrip(numericTripId);
             navigate('/trips');
         } catch (err: any) {
-            alert(err.message || 'Failed to delete trip');
+            alert(err.message || 'Не удалось удалить поездку');
         }
     };
 
@@ -105,7 +105,7 @@ const TripDetailPage: React.FC = () => {
             setMessages(prev => [...prev, sentMessage]);
             setNewMessage('');
         } catch (err: any) {
-            alert(err.message || 'Failed to send message');
+            alert(err.message || 'Не удалось отправить сообщение');
         }
     };
 
@@ -125,7 +125,7 @@ const TripDetailPage: React.FC = () => {
                 </div>
                 <Link to="/trips" className="flex items-center text-teal-600 hover:text-teal-700">
                     <ArrowLeft className="h-5 w-5 mr-1" />
-                    Back to all trips
+                    Назад к поездкам
                 </Link>
             </div>
         );
@@ -231,7 +231,7 @@ const TripDetailPage: React.FC = () => {
                             }`}
                             onClick={() => setActiveTab('details')}
                         >
-                            Trip Details
+                            Подробности поездки
                         </button>
                         <button
                             className={`px-4 py-3 text-sm font-medium border-b-2 focus:outline-none ${
@@ -241,7 +241,7 @@ const TripDetailPage: React.FC = () => {
                             }`}
                             onClick={() => setActiveTab('itinerary')}
                         >
-                            Itinerary
+                            Маршрут
                         </button>
                         <button
                             className={`px-4 py-3 text-sm font-medium border-b-2 focus:outline-none ${
@@ -251,7 +251,7 @@ const TripDetailPage: React.FC = () => {
                             }`}
                             onClick={() => setActiveTab('messages')}
                         >
-                            Messages
+                            Сообщения
                         </button>
                     </nav>
                 </div>
@@ -334,7 +334,7 @@ const TripDetailPage: React.FC = () => {
                                     <div className="border-t border-gray-200 p-4 text-center">
                                         <p className="text-gray-600 mb-2">You need to be logged in to send messages</p>
                                         <Link to="/login" className="text-teal-600 hover:text-teal-700 font-medium">
-                                            Log in to participate
+                                            Авторизуйтесь, чтобы принять участие
                                         </Link>
                                     </div>
                                 )}

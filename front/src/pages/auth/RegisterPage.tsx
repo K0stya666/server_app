@@ -34,17 +34,17 @@ const RegisterPage: React.FC = () => {
         const newErrors: Record<string, string> = {};
 
         if (!formData.username.trim()) {
-            newErrors.username = 'Username is required';
+            newErrors.username = 'Имя пользователя обязательно';
         }
 
         if (!formData.password) {
-            newErrors.password = 'Password is required';
+            newErrors.password = 'Пароль обязателен';
         } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
+            newErrors.password = 'Пароль должен содержать не менее 6 символов';
         }
 
         if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Passwords do not match';
+            newErrors.confirmPassword = 'Пароли не совпадают';
         }
 
         setErrors(newErrors);
@@ -71,7 +71,7 @@ const RegisterPage: React.FC = () => {
 
             navigate('/trips');
         } catch (err: any) {
-            setErrors({ global: err.message || 'Registration failed. Please try again.' });
+            setErrors({ global: err.message || 'Регистрация не удалась. Попробуйте еще раз.' });
         } finally {
             setIsLoading(false);
         }
@@ -86,7 +86,7 @@ const RegisterPage: React.FC = () => {
                     </div>
                     <h2 className="mt-4 text-3xl font-extrabold text-gray-900">Create your account</h2>
                     <p className="mt-2 text-sm text-gray-600">
-                        Join our community of travelers and start exploring
+                        Присоединяйтесь к нашему сообществу путешественников
                     </p>
                 </div>
 
@@ -139,7 +139,7 @@ const RegisterPage: React.FC = () => {
                         multiline
                         value={formData.bio}
                         onChange={handleChange}
-                        placeholder="Tell us a bit about yourself"
+                        placeholder="Расскажите немного о себе"
                     />
 
                     <InputField
@@ -148,7 +148,7 @@ const RegisterPage: React.FC = () => {
                         multiline
                         value={formData.preferences}
                         onChange={handleChange}
-                        placeholder="What kind of travel do you enjoy? (e.g., adventure, culture, relaxation)"
+                        placeholder="Какие путешествия вам нравятся?"
                     />
 
                     <Button

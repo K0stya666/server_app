@@ -36,17 +36,17 @@ const CreateTripPage: React.FC = () => {
         const newErrors: Record<string, string> = {};
 
         if (!formData.title.trim()) {
-            newErrors.title = 'Title is required';
+            newErrors.title = 'Название обязательно';
         }
 
         if (!formData.start_date) {
-            newErrors.start_date = 'Start date is required';
+            newErrors.start_date = 'Требуется дата начала';
         }
 
         if (!formData.end_date) {
-            newErrors.end_date = 'End date is required';
+            newErrors.end_date = 'Дата окончания обязательна';
         } else if (formData.start_date && new Date(formData.end_date) < new Date(formData.start_date)) {
-            newErrors.end_date = 'End date cannot be before start date';
+            newErrors.end_date = 'Дата окончания не может быть раньше даты начала';
         }
 
         setErrors(newErrors);
@@ -61,11 +61,11 @@ const CreateTripPage: React.FC = () => {
         }
 
         if (!formData.destination.trim()) {
-            newErrors.destination = 'Destination is required';
+            newErrors.destination = 'Требуется указать пункт назначения';
         }
 
         if (formData.duration_days !== undefined && formData.duration_days <= 0) {
-            newErrors.duration_days = 'Duration must be a positive number';
+            newErrors.duration_days = 'Длительность должна быть положительным числом.';
         }
 
         setErrors(newErrors);
@@ -95,7 +95,7 @@ const CreateTripPage: React.FC = () => {
             const createdTrip = await tripsApi.createTrip(formData);
             navigate(`/trips/${createdTrip.id}`);
         } catch (err: any) {
-            setErrors({ global: err.message || 'Failed to create trip' });
+            setErrors({ global: err.message || 'Не удалось создать поездку' });
         } finally {
             setIsSubmitting(false);
         }
@@ -105,13 +105,13 @@ const CreateTripPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8 max-w-2xl">
             <Link to="/trips" className="flex items-center text-teal-600 hover:text-teal-700 mb-6">
                 <ArrowLeft className="h-5 w-5 mr-1" />
-                Back to all trips
+                Назад к поездкам
             </Link>
 
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="bg-teal-600 p-6 text-white">
-                    <h1 className="text-2xl font-bold">Create a New Trip</h1>
-                    <p className="mt-1 text-teal-100">Find travel companions for your adventure</p>
+                    <h1 className="text-2xl font-bold">Создание поездки</h1>
+                    <p className="mt-1 text-teal-100">Найдите попутчиков для вашего приключения</p>
                 </div>
 
                 <div className="p-6">
@@ -157,29 +157,29 @@ const CreateTripPage: React.FC = () => {
                         <div className="space-y-4">
                             <InputField
                                 id="title"
-                                label="Trip Title"
+                                label="Название поездки"
                                 value={formData.title}
                                 onChange={handleChange}
                                 error={errors.title}
                                 required
-                                placeholder="e.g., Backpacking through Europe"
+                                placeholder="например, поход по Европе"
                             />
 
                             <InputField
                                 id="description"
-                                label="Trip Description"
+                                label="Описание поездки"
                                 multiline
                                 rows={4}
                                 value={formData.description || ''}
                                 onChange={handleChange}
                                 error={errors.description}
-                                placeholder="Describe your trip, what you plan to do, what kind of travel partners you're looking for, etc."
+                                placeholder="Опишите свою поездку, что вы планируете делать, каких попутчиков вы ищете и т. д."
                             />
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <InputField
                                     id="start_date"
-                                    label="Start Date"
+                                    label="Дата начала"
                                     type="date"
                                     value={formData.start_date}
                                     onChange={handleChange}
@@ -189,7 +189,7 @@ const CreateTripPage: React.FC = () => {
 
                                 <InputField
                                     id="end_date"
-                                    label="End Date"
+                                    label="Дата окончания"
                                     type="date"
                                     value={formData.end_date}
                                     onChange={handleChange}
@@ -205,28 +205,28 @@ const CreateTripPage: React.FC = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <InputField
                                     id="origin"
-                                    label="Origin"
+                                    label="Откуда"
                                     value={formData.origin}
                                     onChange={handleChange}
                                     error={errors.origin}
                                     required
-                                    placeholder="e.g., New York"
+                                    placeholder="Санкт-Петербург"
                                 />
 
                                 <InputField
                                     id="destination"
-                                    label="Destination"
+                                    label="Куда"
                                     value={formData.destination}
                                     onChange={handleChange}
                                     error={errors.destination}
                                     required
-                                    placeholder="e.g., Paris"
+                                    placeholder="Москва"
                                 />
                             </div>
 
                             <InputField
                                 id="duration_days"
-                                label="Duration (days)"
+                                label="Продолжительность (дней)"
                                 type="number"
                                 value={formData.duration_days?.toString() || ''}
                                 onChange={(e) => handleChange({

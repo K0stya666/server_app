@@ -8,11 +8,6 @@ from app.models import (
     Profession, ProfessionCreate
 )
 
-# from typing import List, TypedDict
-# from sqlmodel import select
-# from app.connection import init_db, get_session
-# # from app.models import Warrior, WarriorDefault, WarriorResponse, Skill, Profession
-# from app.models import Warrior, Skill, Profession, WarriorDefault, WarriorProfessions
 
 
 app = FastAPI()

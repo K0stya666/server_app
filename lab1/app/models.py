@@ -31,6 +31,7 @@ class Message(SQLModel, table=True):
 # Основная таблица пользователей
 class UserProfile(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    hashed_password: str = Field(max_length=256)
     username: str = Field(index=True, unique=True)
     full_name: Optional[str]
     bio: Optional[str]
@@ -76,9 +77,9 @@ class Trip(SQLModel, table=True):
 # DTO-модели для создания сущностей
 class UserCreate(SQLModel):
     username: str
-    full_name: Optional[str]
-    bio: Optional[str]
-    preferences: Optional[str]
+    full_name: Optional[str]    = None
+    bio: Optional[str]          = None
+    preferences: Optional[str]  = None
     password: str  # будет хэшироваться при регистрации
 
 class TripCreate(SQLModel):

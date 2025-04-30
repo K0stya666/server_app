@@ -106,13 +106,3 @@ class WarriorResponse(WarriorDefault):
 
 # ============================================================================
 
-
-
-
-
-
-
-# class WarriorProfessions(WarriorDefault):
-#     profession: Optional[Profession] = None
-
-# Модель для вложенного ответа
