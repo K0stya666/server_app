@@ -101,7 +101,7 @@ const TripCard: React.FC<TripCardProps> = ({
                                 size="sm"
                                 onClick={onLeave}
                             >
-                                Leave Trip
+                                Покинуть
                             </Button>
                         ) : (
                             <Button
@@ -109,7 +109,7 @@ const TripCard: React.FC<TripCardProps> = ({
                                 size="sm"
                                 onClick={onJoin}
                             >
-                                Join Trip
+                                Присоединиться
                             </Button>
                         )
                     )}
@@ -117,7 +117,7 @@ const TripCard: React.FC<TripCardProps> = ({
                     {isOwner && (
                         <Link to={`/trips/${trip.id}/edit`}>
                             <Button variant="secondary" size="sm">
-                                Edit Trip
+                                Редактировать поездку
                             </Button>
                         </Link>
                     )}
