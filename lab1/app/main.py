@@ -18,7 +18,7 @@ import hashlib
 import jwt
 
 # jwt
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = "9f8aC3nVgB1rX5dZ7qW2LkE0mJsRtY4uAaTbHpN6xOiVzPgQeChMwKldUFyXEr39"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -79,7 +79,7 @@ def register(
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
-    db_user.hashed_password = hashed  # не сохраняется в БД, для примера
+    db_user.hashed_password = hashed
     return db_user
 
 @app.post("/login")
