@@ -1,8 +1,10 @@
-fastapi
+fastapi~=0.115.12
 uvicorn
-sqlmodel
+sqlmodel~=0.0.24
 psycopg2-binary
-alembic
-python-dotenv
-PyJWT
+alembic~=1.16.1
+python-dotenv~=1.1.0
+PyJWT~=2.10.1
 python-multipart
+pydantic~=2.11.5
+SQLAlchemy~=2.0.41

@@ -3,16 +3,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from typing import List
 from datetime import datetime, timedelta
-from sqlmodel import select
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlmodel import select, SQLModel, Session
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm, HTTPBearer, HTTPAuthorizationCredentials
 
+from app.auth import verify_jwt, verify_password, create_jwt, hash_password
 from app.connection import init_db, get_session
 from app.models import (
     UserProfile, UserCreate,
     Trip, TripCreate,
     TripParticipantLink,
     ItineraryItem, ItineraryItemCreate,
-    Message, MessageCreate
+    Message, MessageCreate, ChangePassword
 )
 import hashlib
 import jwt
@@ -24,6 +25,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 app = FastAPI()
+http_bearer = HTTPBearer()
 
 # CORS
 app.add_middleware(
@@ -42,8 +44,8 @@ def on_startup():
     init_db()
 
 # хэширование паролей и генерация токенов
-def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode()).hexdigest()
+# def hash_password(password: str) -> str:
+#     return hashlib.sha256(password.encode()).hexdigest()
 
 def create_access_token(data: dict, expires_minutes: int = ACCESS_TOKEN_EXPIRE_MINUTES) -> str:
     to_encode = data.copy()
@@ -51,23 +53,37 @@ def create_access_token(data: dict, expires_minutes: int = ACCESS_TOKEN_EXPIRE_M
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def get_current_user(token: str = Depends(oauth2_scheme), session=Depends(get_session)) -> UserProfile:
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("user_id")
-    except jwt.PyJWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
+    session: Session = Depends(get_session)
+) -> UserProfile:
+    """
+    Извлекаем пользователя по JWT-токену из заголовка Authorization: Bearer <token>.
+    """
+    token = credentials.credentials
+    payload = verify_jwt(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    user_id = payload.get("user_id")
     user = session.get(UserProfile, user_id)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=401, detail="User not found")
+
     return user
 
 # Аутентификация
 @app.post("/register", response_model=UserProfile)
 def register(
         user: UserCreate,
-        session=Depends(get_session)
+        session: Session = Depends(get_session)
 ):
+    existing_user = session.exec(
+        select(UserProfile).where(UserProfile.username == user.username)
+    ).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username already exists")
+
     hashed = hash_password(user.password)
     db_user = UserProfile(
         username=user.username,
@@ -79,19 +95,56 @@ def register(
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
-    db_user.hashed_password = hashed
     return db_user
 
 @app.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(),
-          session=Depends(get_session)
-          ):
-    statement = select(UserProfile).where(UserProfile.username == form_data.username)
-    user = session.exec(statement).first()
-    if not user or hash_password(form_data.password) != user.hashed_password:
+def login(
+    user_in: UserCreate,
+    session: Session = Depends(get_session)
+):
+    user = session.exec(
+        select(UserProfile).where(UserProfile.username == user_in.username)
+    ).first()
+    if not user or not verify_password(user_in.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    token = create_access_token({"user_id": user.id})
+
+    token = create_jwt({"user_id": user.id})
     return {"access_token": token, "token_type": "bearer"}
+
+# получения данных текущего пользователя
+@app.get("/users/me", response_model=UserProfile)
+def read_current_user(current_user: UserProfile = Depends(get_current_user)):
+    """
+    Возвращаем текущего авторизованного пользователя
+    """
+    return current_user
+
+# получение списка всех пользователей
+@app.get("/users", response_model=List[UserProfile])
+def list_users(session=Depends(get_session)):
+    return session.exec(select(UserProfile)).all()
+
+# смена пароля текущего пользователя
+@app.post("/users/me/password")
+def change_password(
+        passwords: ChangePassword,
+        current_user: UserProfile = Depends(get_current_user),
+        session=Depends(get_session)
+):
+
+    # проверка old пароля
+    if not verify_password(passwords.old_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Old password is incorrect")
+
+    # установка new пароля
+    current_user.hashed_password = hash_password(passwords.new_password)
+    session.add(current_user)
+    session.commit()
+    return {"status": "password_changed"}
+
+
+
+
 
 # CRUD поездок
 @app.post("/trips", response_model=Trip)

@@ -1,6 +1,9 @@
 import os
+from contextlib import contextmanager
+from typing import Generator
+
 from dotenv import load_dotenv
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel, create_engine, Session
 
 # Загрузка переменных окружения из .env
 load_dotenv()
@@ -19,6 +22,16 @@ def init_db():
     """
     SQLModel.metadata.create_all(engine)
 
+@contextmanager
+def _session_manager() -> Generator[Session, None, None]:
+    """
+    Создание сессии с последующим закрытием после её завершения
+    """
+    session = Session(engine)
+    try:
+        yield session
+    finally:
+        session.close()
 
 def get_session():
     """

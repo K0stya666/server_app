@@ -82,6 +82,11 @@ class UserCreate(SQLModel):
     preferences: Optional[str]  = None
     password: str  # будет хэшироваться при регистрации
 
+# dto для смены пароля
+class ChangePassword(SQLModel):
+    old_password: str
+    new_password: str
+
 class TripCreate(SQLModel):
     title: str
     description: Optional[str]
